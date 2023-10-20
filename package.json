@@ -1,14 +1,14 @@
 {
   "name": "myblogjs-backend",
-  "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "version": "0.0.1",
+  "description": "Um sistema de blog pessoal baseado em Node e Express",
+  "main": "./src/server.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "dev": "nodemon src/server.js"
   },
   "keywords": [],
-  "author": "",
+  "author": "Marco Sousa",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^5.4.2",
