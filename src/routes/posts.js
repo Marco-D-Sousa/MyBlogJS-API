@@ -7,7 +7,12 @@ const postsRoutes = Router();
 const postsController = new PostsController();
 
 postsRoutes.post("/create", postsController.create);
+postsRoutes.post("/createWithTags", postsController.createPostWithTags);
+postsRoutes.post("/update/:postId", postsController.updateTagsInPost);
+
 postsRoutes.get("/", postsController.listAll);
 postsRoutes.get("/:id", postsController.listForAuthor);
+
+postsRoutes.delete("/", postsController.delete);
 
 module.exports = postsRoutes;

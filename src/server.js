@@ -10,3 +10,4 @@ app.use(routes);
 app.listen(process.env.PORT, () => {
 	console.log(`Listening on http://localhost:${PORT} ...`);
 });
+//TODO ajustar melhor os erros

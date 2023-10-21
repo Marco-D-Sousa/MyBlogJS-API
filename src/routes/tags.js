@@ -9,6 +9,6 @@ const tagsController = new TagsController();
 tagsRoutes.get("/", tagsController.listAll);
 tagsRoutes.get("/:postId", tagsController.listForPost);
 
-tagsRoutes.post("/:postId", tagsController.create);
+tagsRoutes.post("/:posts", tagsController.create);
 
 module.exports = tagsRoutes;
