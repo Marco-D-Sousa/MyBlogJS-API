@@ -7,8 +7,8 @@ const tagsRoutes = Router();
 const tagsController = new TagsController();
 
 tagsRoutes.get("/", tagsController.listAll);
-tagsRoutes.get("/:postId", tagsController.listForPost);
+tagsRoutes.get("/find", tagsController.postHasTag);
+tagsRoutes.get("/:postId", tagsController.listTagsForPost);
 
-tagsRoutes.post("/:posts", tagsController.create);
 
 module.exports = tagsRoutes;

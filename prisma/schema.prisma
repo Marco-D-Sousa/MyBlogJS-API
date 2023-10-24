@@ -27,12 +27,12 @@ model Post {
   author   User @relation(fields: [authorId], references: [id])
   authorId Int
 
-  tags Tag[]
+  tags Tag[] @relation("TagToPost")
 }
 
 model Tag {
   id   Int    @id @default(autoincrement())
   name String @unique
 
-  posts Post[]
+  posts Post[] @relation("TagToPost")
 }

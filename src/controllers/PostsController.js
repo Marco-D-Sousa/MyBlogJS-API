@@ -4,25 +4,8 @@ const prisma = new PrismaClient();
 const AppError = require('../utils/AppError')
 
 class PostsController {
-	async create(req, res) {
-		const {title, content, authorId} = req.body;
 
-		const user = await prisma.user.findUnique({
-			where: {id: authorId},
-		});
-
-		const post = await prisma.post.create({
-			data: {
-				title,
-				content,
-				authorId: user.id,
-			},
-		});
-		console.log(user.id);
-		return res.status(201).json(post);
-	}
-
-	async createPostWithTags(req, res) {
+	async createPost(req, res) {
 		const {title, content, authorId, tags} = req.body
 
 		try {
@@ -30,18 +13,23 @@ class PostsController {
 				where: {id: authorId},
 			})
 
-			const post = await prisma.post.create({
-				data: {
-					title,
-					content,
-					authorId: user.id,
-					tags: {
-						connectOrCreate: tags.map((tag) => ({
-							create: { name: tag },
-							where: { name: tag }
-						}))
-					}
+			const postData = {
+				title,
+				content,
+				authorId: user.id
+			}
+
+			if (tags && tags.length > 0) {
+				postData.tags = {
+					connectOrCreate: tags.map((tag) => ({
+						create: { name: tag },
+						where: { name: tag }
+					}))
 				}
+			}
+
+			const post = await prisma.post.create({
+				data: postData
 			})
 
 			return res.status(201).json(post)
@@ -53,21 +41,36 @@ class PostsController {
 		}
 	}
 
-	async updateTagsInPost(req, res) { //TODO colocar para atualizar o título e conteúdo do Post
-		const {newTags} = req.body
+	async updatePost(req, res) { //TODO colocar para atualizar o título e conteúdo do Post
+		const {title, content, newTags} = req.body
 		let {postId} = req.params
 
 		try{
-			const updatedPost = await prisma.post.update({
-				where: {id: Number(postId)},
-				data: {
-					tags: {
-						connectOrCreate: newTags.map((tag) => ({
-							create: { name: tag },
-							where: { name: tag }
-						}))
-					}
+			const post = await  prisma.post.findUnique({
+				where: { id: Number(postId) }
+			})
+
+			post.title = title ?? post.title;
+			post.content = content ?? post.content;
+			post.tags = newTags ?? post.tags;
+
+			const postData = {
+				title,
+				content
+			}
+
+			if (newTags && newTags.length > 0) {
+				postData.tags = {
+					connectOrCreate: newTags.map((tag) => ({
+						create: { name: tag },
+						where: { name: tag }
+					}))
 				}
+			}
+
+			const updatedPost = await prisma.post.update({
+				where: { id: post.id },
+				data: postData
 			})
 
 			return res.status(201).json(updatedPost)
@@ -79,19 +82,34 @@ class PostsController {
 	}
 
 	async listAll(req, res) {
-		const allPosts = await prisma.post.findMany();
+		try {
+			const allPosts = await prisma.post.findMany({
+				include: { tags: true }
+			});
 
-		return res.status(201).json(allPosts);
+			return res.status(201).json(allPosts);
+		}
+		catch (e) {
+			console.log(e.message)
+			res.status(500).json({error: 'Something went wrong'});
+		}
 	}
 
 	async listForAuthor(req, res) {
 		let {id} = req.params;
 
-		const postForAuthor = await prisma.post.findMany({
-			where: {authorId: Number(id)},
-		});
+		try{
+			const postForAuthor = await prisma.post.findMany({
+				where: {authorId: Number(id)},
+				include: { tags: true }
+			});
 
-		return res.status(201).json(postForAuthor);
+			return res.status(201).json(postForAuthor);
+		}
+		catch (e) {
+			console.log(e.message)
+			res.status(500).json({error: 'Something went wrong'});
+		}
 	}
 
 	async delete(req, res) {
@@ -117,10 +135,6 @@ class PostsController {
 
 		return  res.status(201).json(deletedPost)
 	}
-
-
-
-
 }
 
 module.exports = PostsController;

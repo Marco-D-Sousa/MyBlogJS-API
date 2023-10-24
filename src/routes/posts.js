@@ -6,9 +6,8 @@ const postsRoutes = Router();
 
 const postsController = new PostsController();
 
-postsRoutes.post("/create", postsController.create);
-postsRoutes.post("/createWithTags", postsController.createPostWithTags);
-postsRoutes.post("/update/:postId", postsController.updateTagsInPost);
+postsRoutes.post("/create", postsController.createPost);
+postsRoutes.post("/update/:postId", postsController.updatePost);
 
 postsRoutes.get("/", postsController.listAll);
 postsRoutes.get("/:id", postsController.listForAuthor);
