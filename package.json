@@ -11,12 +11,12 @@
   "author": "Marco Sousa",
   "license": "ISC",
   "dependencies": {
-    "@prisma/client": "^5.5.0",
+    "@prisma/client": "^5.5.2",
     "bcrypt": "^5.1.1",
     "express": "^4.18.2"
   },
   "devDependencies": {
     "nodemon": "^3.0.1",
-    "prisma": "^5.5.0"
+    "prisma": "^5.5.2"
   }
 }

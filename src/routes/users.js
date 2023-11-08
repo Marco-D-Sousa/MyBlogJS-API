@@ -7,7 +7,8 @@ const usersRoutes = Router();
 const usersController = new UsersController();
 
 usersRoutes.post("/", usersController.create);
-usersRoutes.post("/update", usersController.update);
+
+usersRoutes.put("/update", usersController.update);
 
 usersRoutes.delete("/", usersController.delete);
 
