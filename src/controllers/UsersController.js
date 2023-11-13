@@ -1,6 +1,8 @@
 const { PrismaClient } = require("@prisma/client");
 const prisma = new PrismaClient();
 
+const auth = require("../middlewares/auth")
+const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
 class UsersController {
@@ -89,6 +91,38 @@ class UsersController {
 
 		return res.status(200).json(searchUser);
 	}
+
+	async login(req, res) {
+		const { email, password } = req.body
+
+		if(!(email && password)) {
+			res.status(400).json("Todos os campos sao necessários")
+		}
+
+		const user = await prisma.user.findUnique({
+			where: {
+				email
+			}
+		})
+		console.log(user.password);
+		//var checkedPassword = bcrypt.compareSync(password, user.password)
+		
+		if (user && bcrypt.compareSync(password, user.password)){
+			const token = jwt.sign(
+				{ user_id: user._id, email },
+				process.env.TOKEN_KEY,
+				{
+					expiresIn: "1h",
+				}
+			);
+
+			user.token = token;
+			
+			return res.status(200).json(user)
+		}
+		return res.status(400).json("invalid credentials")
+	}
+
 }
 
 module.exports = UsersController;
