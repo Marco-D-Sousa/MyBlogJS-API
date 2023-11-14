@@ -9,8 +9,8 @@ const app = express();
 app.use(express.json());
 app.use(routes);
 
-app.post("/auth", auth, (req, res) => {
-	res.status(200).send("welcome")
+app.get("/auth", auth, (req, res) => {
+	res.status(200).json(req.user.email)
 })
 
 app.listen(process.env.PORT, () => {
